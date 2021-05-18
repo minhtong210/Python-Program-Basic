@@ -1,11 +1,13 @@
-import method, time, resources, datetime
+import method, time, resources, datetime, os
 
 def main_option(file_name, kind, option):
+	os.system("clear")
 	with open(f"{file_name}") as danhsach:
 		ds = danhsach.readlines()
 
 	def option_case(func):
 		while True:
+			os.system("clear")
 			method.read(f"{file_name}")
 			num_pick = input(f"Nhập vào {kind} muốn chọn: ")
 			method.cross()
@@ -19,15 +21,16 @@ def main_option(file_name, kind, option):
 			else:
 				method.option_error()
 
-	if option == 1: option_case(KH_chitiet)
-	elif option == 2: option_case(HV_chitiet)
-	else: option_case(GV_chitiet)
+	if option == 1: option_case(course_option)
+	elif option == 2: option_case(student_option)
+	else: option_case(lecturer_option)
 			
-def KH_chitiet(num):
+def course_option(num):
 	while True:
+		os.system("clear")
 		course = resources.courses[num - 1]
-		course.chitietKH()
-		method.read("KH_chitiet.text")
+		course.course_info()
+		method.read("Course/Course_info.text")
 
 		num_pick = input(f"Nhập vào số thông tin muốn chỉnh sửa: ")
 		method.cross()
@@ -35,6 +38,7 @@ def KH_chitiet(num):
 		# Không thể chỉnh sửa số học viên
 		if num_pick == "1":
 			print("Bạn không thể chỉnh sửa mục số Học Viên")
+			time.sleep(2)
 		# Chỉnh sửa mô tả
 		elif num_pick == "2":
 			replace_text = input("Bạn muốn chỉnh sửa thành: ")
@@ -45,7 +49,7 @@ def KH_chitiet(num):
 		# Chỉnh sửa Giảng viên
 		elif num_pick == "3":
 			print("Bạn không thể chỉnh sửa mục giảng viên tại đây, vui lòng sang option 3 !")
-
+			time.sleep(2)
 		# Quay lại
 		elif num_pick == "back": 
 			break
@@ -53,12 +57,13 @@ def KH_chitiet(num):
 			method.option_error()
 	
 
-def HV_chitiet(num):
+def student_option(num):
 	while True:
+		os.system("clear")
 		student = resources.students[num - 1]
-		student.chitietHV()
-		KH_total = len(student.courses)
-		method.read("HV_chitiet.text")
+		student.student_info()
+		stu_courses = len(student.courses)
+		method.read("Student/Student_info.text")
 
 		num_pick = input("Nhập vào khoá học muốn thoát / lựa chọn tham gia: ")
 		method.cross()
@@ -66,13 +71,14 @@ def HV_chitiet(num):
 		# Cho trường hợp học sinh không có khoá học nhưng bấm 0
 
 		# Lựa chọn tham gia khoá học
-		if num_pick == str(KH_total + 1):
+		if num_pick == str(stu_courses + 1):
 			# Nếu có 3 khoá học
-			if KH_total == 3:
+			if stu_courses == 3:
 				print("Học viên không thể tham gia quá 3 khoá học")
+				time.sleep(2)
 			# Ít hơn 3 khoá
 			else:
-				method.read("KH_ds.text")
+				method.read("Course/Course_list.text")
 				pick = input("Nhập vào khoá học bạn muốn tham gia: ")
 				method.cross()
 
@@ -81,19 +87,21 @@ def HV_chitiet(num):
 					# Trường hợp KH full
 					if course_pick.quantity == 50:
 						print("Khoá học đã full, không thể tham gia")
+						time.sleep(2)
 					# Trường hợp KH có thể tham gia
 					elif course_pick.quantity < 50:
 						# Trường hợp trùng KH
 						if course_pick.course_name in student.courses:
 							print("Khoá học này học viên đã tham gia, không thể tham gia trùng 1 lớp")
+							time.sleep(2)
 						# Trường hợp không trùng
 						else:
 							# Update học viên tham gia khoá học
 							student.courses.insert(int(pick) - 1 ,course_pick.course_name)
-							resources.update_HV()
+							resources.update_student()
 							# Update khoá học
 							course_pick.quantity += 1
-							resources.update_KH()
+							resources.update_course()
 							method.success("Đã tham gia thành công")
 
 				elif pick == "back":
@@ -109,11 +117,11 @@ def HV_chitiet(num):
 			for c in resources.courses:
 				if c.course_name == course_pick:
 					c.quantity -= 1
-			resources.update_KH()
+			resources.update_course()
 
 			# Update học viên huỷ khoá học
 			student.courses.pop(int(num_pick) - 1)
-			resources.update_HV()
+			resources.update_student()
 			method.success("Đã huỷ thành công") 
 			
 		# Quay lại
@@ -123,13 +131,14 @@ def HV_chitiet(num):
 			method.option_error()
 
 
-def GV_chitiet(num):
+def lecturer_option(num):
 	while True:
+		os.system("clear")
 		lecturer = resources.lecturers[num - 1]
-		lecturer.chitietGV()
-		lecturer.chitietGV_KH()
-		resources.update_GV()
-		method.read("GV_chitiet.text")
+		lecturer.lecturer_info()
+		lecturer.lecturer_course_info()
+		resources.update_lecturer()
+		method.read("Lecturer/Lecturer_info.text")
 
 		num_pick = input("Nhập vào thông tin giảng viên muốn chỉnh sửa: ")
 		method.cross()
@@ -142,15 +151,16 @@ def GV_chitiet(num):
 					if c.lecturer == lecturer.full_name:
 						c.lecturer = replace_text
 				lecturer.full_name = replace_text
-				resources.update_KH()
+				resources.update_course()
 				method.success("Chỉnh sửa thành công")
 		
 		# Chỉnh sửa khoá học đang giảng dạy
 		elif num_pick == "2":
 			while True:
+				os.system("clear")
 				# List ra các khoá học
-				lecturer.chitietGV_KH()
-				method.read("GV_chitiet_KH.text")
+				lecturer.lecturer_course_info()
+				method.read("Lecturer/Lecturer_course_info.text")
 				pick = input("Nhập vào khoá học muốn huỷ dạy / lựa chọn tham gia: ")
 				method.cross()
 
@@ -161,24 +171,23 @@ def GV_chitiet(num):
 					valid_date = datetime.datetime.strptime(lecturer.valid, '%d/%m/%Y')
 					today = datetime.datetime.today()
 					if valid_date > today:
-						method.read("KH_ds.text")
-						pick_KH = input("Nhập vào khoá học bạn muốn tham gia giảng dạy: ")
+						method.read("Course/Course_list.text")
+						pick_course = input("Nhập vào khoá học bạn muốn tham gia giảng dạy: ")
 
 						# Nếu đủ điều kiện
-						if pick_KH in method.str_range_inclue(resources.courses):
-							course_pick = resources.courses[int(pick_KH) - 1]
+						if pick_course in method.str_range_inclue(resources.courses):
+							course_pick = resources.courses[int(pick_course) - 1]
 							method.cross()
 							
 							# Nếu lớp còn trống
 							if course_pick.lecturer == "":
 								course_pick.lecturer = lecturer.full_name
-								lecturer.courses.insert(int(pick_KH) - 1, course_pick.course_name)
+								lecturer.courses.insert(int(pick_course) - 1, course_pick.course_name)
 								method.success("Đã tham gia thành công")
-								
 							# Nếu lớp đã có giảng viên
 							else:
 								print("Bạn không thể giảng dạy khoá học đã có giảng viên, vui lòng xem khoá học tại option 1")
-						
+								time.sleep(2)
 						# Quay lại
 						elif num_pick == "back": 
 							break
@@ -186,6 +195,7 @@ def GV_chitiet(num):
 							method.option_error()
 					else:
 						print("Bạn không thể giảng dạy khoá học vì đã hết thời hạn hợp đồng")
+						time.sleep(2)
 
 				# Lựa chọn huỷ dạy khoá học
 				elif pick in method.str_range_inclue(lecturer.courses):
@@ -195,12 +205,12 @@ def GV_chitiet(num):
 					for c in resources.courses:
 						if c.course_name == course_pick:
 							c.lecturer = ""
-					resources.update_KH()
+					resources.update_course()
 
 					# Update giảng viên dạy khoá học
 					lecturer.courses.pop(int(pick) - 1)
-					lecturer.chitietGV_KH()
-					resources.update_GV()
+					lecturer.lecturer_course_info()
+					resources.update_lecturer()
 
 					method.success("Đã huỷ thành công")
 
@@ -212,6 +222,7 @@ def GV_chitiet(num):
 		
 		# Chỉnh sửa thời hạn hợp đồng
 		elif num_pick == "3":
+			os.system("clear")
 			print("Vui lòng nhập ngày tháng năm theo thứ tự !")
 			day = input("Ngày (2 chữ số): ")
 			month = input("Tháng (2 chữ số): ")
@@ -228,10 +239,11 @@ def GV_chitiet(num):
 				# Cập nhật thời hạn hợp đồng
 				l = method.listToStr([day,month,year], "/")
 				lecturer.valid = l
-				resources.update_GV()
+				resources.update_lecturer()
 				method.success("Chỉnh sửa thành công")
 			else:
 				print("Vui lòng nhập lại ngày tháng năm đúng theo lịch và chỉ có số")
+				time.sleep(2)
 
 		# Quay lại		
 		elif num_pick == "back": 

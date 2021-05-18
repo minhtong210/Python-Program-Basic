@@ -7,9 +7,11 @@ def success(message):
 	time.sleep(1)
 	print(message)
 	cross()
+	time.sleep(2)
 
 def option_error():
 	print("Vui lòng chỉ nhập những Option có trong danh sách hiển thị hoặc 'back' để quay về")
+	time.sleep(2)
 
 def listToStr(l, seperator):
 	return seperator.join(l)
@@ -73,6 +75,8 @@ def date_condition1(d = 0, m = 0, y = 0):
 	return False
 
 def date_condition2(d = 0, m = 0):
+	d = int(d)
+	m = int(m)
 	if d == 29 and m == 2 or d == 30 and m == 2 or d == 31 and m == 2 or d == 31 and m == 4 or d == 31 and m == 6 or d == 31 and m == 9 or d == 31 and m == 11:   
 		return False
 	return True
