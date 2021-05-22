@@ -90,7 +90,7 @@ def date_condition2(d = 0, m = 0):
 
 def mark_condition(text, *m):
 	if text.replace('.','',1).isdigit():
-		x = [i for i in m if float(i) > 0 or float(i) == 0 and float(i) < 10 or float(i) == 10]
+		x = [i for i in m if (float(i) > 0 or float(i) == 0) and (float(i) < 10 or float(i) == 10)]
 		if len(x) == 3:
 			return True
 	return False

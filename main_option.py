@@ -34,7 +34,7 @@ def course_option(num, a_check):
 	while True:
 		os.system("clear")
 		course = resources.courses[num - 1]
-		
+		resources.update_course()
 		# Kiểm tra số lượng học viên qua môn
 		course.rate = resources.update_student_pass(0, course.course_name)
 		
@@ -48,7 +48,16 @@ def course_option(num, a_check):
 		# Không thể chỉnh sửa số học viên
 		if num_pick == "1":
 			if "HIEUTRUONG" in a_check:
-				method.fail("Bạn không thể chỉnh sửa mục số Học Viên")
+				print("Bạn chỉ có thể chỉnh sửa số lượng học viên tối đa của khoá !")
+				max_num = input("Nhập vào số học viên tối đa bạn muốn chỉnh sửa: ")
+				method.cross()
+
+				if method.input_condition(max_num, True, False):
+					if int(max_num) < course.quantity:
+						method.fail("Bạn không thể chỉnh sửa số lượng tối đa thấp hơn số lượng học viên hiện có")
+					else:
+						course.max_quantity = int(max_num)
+						method.success("Chỉnh sửa thành công")
 			else:
 				method.not_allow()
 
@@ -371,3 +380,4 @@ def lecturer_option(num, a_check):
 				method.option_error()
 		else:
 			input("Bạn không có quyền hạn để chỉnh sửa thông tin giảng viên. Nhấn 'Enter' de quay lai")
+			break

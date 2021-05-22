@@ -17,7 +17,7 @@ def del_option(account_check):
 		else: method.option_error()
 
 def student(a_check):
-	if not "GIAOVIEN" in a_check:
+	if "HIEUTRUONG" in a_check:
 		while True:
 			os.system("clear")
 			stu_list = resources.students

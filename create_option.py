@@ -22,7 +22,7 @@ def create_option(account_check):
 
 
 def student(a_check):
-	if not "GIAOVIEN" in a_check:
+	if "HIEUTRUONG" in a_check:
 		while True:
 			os.system("clear")
 			choice = input("Bạn có chắc tạo học viên mới (y/n)? ")

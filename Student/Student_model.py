@@ -62,4 +62,4 @@ class Stu_Course:
 		return f"{self.course_name}"
 
 	def get_point(self):
-		return f"{self.course_name} - Toán: {self.math}, Văn: {self.literature}, Anh: {self.eng} - {self.grade}"	
+		return f"{self.course_name} - Toán: {self.math}, Văn: {self.literature}, Anh: {self.eng}"	
